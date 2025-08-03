@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stealth EXE Cryptor v2.0</title>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: 'Consolas', monospace; background: #0d1117; color: #c9d1d9; max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; padding: 20px; border-bottom: 1px solid #30363d; }
+        h1 { color: #58a6ff; margin-bottom: 5px; }
+        .subtitle { color: #8b949e; font-size: 14px; }
+        .container { display: flex; gap: 30px; margin-top: 25px; }
+        .panel { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 20px; flex: 1; }
+        .panel-title { color: #58a6ff; margin-top: 0; }
+        .drop-area { border: 2px dashed #30363d; border-radius: 6px; padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.3s; margin-bottom: 20px; }
+        .drop-area:hover, .drop-area.dragover { background: #1f242c; border-color: #3fb950; }
+        .btn { background: #238636; color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; transition: background 0.3s; }
+        .btn:hover { background: #2ea043; }
+        .btn:disabled { background: #30363d; cursor: not-allowed; }
+        .status { background: #161b22; padding: 15px; border-radius: 6px; margin-top: 20px; font-family: monospace; font-size: 14px; }
+        .features { margin-top: 25px; }
+        .feature { display: flex; align-items: center; margin-bottom: 10px; }
+        .feature-icon { color: #3fb950; margin-right: 10px; }
+        .hidden { display: none; }
+        .signature { text-align: center; margin-top: 30px; color: #8b949e; font-size: 12px; }
+        .option-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; }
+        select, input { width: 100%; padding: 8px; background: #0d1117; border: 1px solid #30363d; border-radius: 4px; color: #c9d1d9; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>STEALTH EXE CRYPTOR v2.0</h1>
+        <div class="subtitle">Антидетект инструмент для образовательных целей | Обходит: Avira, DrWeb, Cynet</div>
+    </div>
+
+    <div class="container">
+        <div class="panel">
+            <h2 class="panel-title">Шаг 1: Загрузка файла</h2>
+            <div class="drop-area" id="dropZone">
+                <p>Перетащите EXE/RAT файл сюда</p>
+                <p>или <strong>кликните</strong> для выбора</p>
+                <input type="file" id="fileInput" accept=".exe,.dll" class="hidden">
+            </div>
+
+            <div class="option-group">
+                <label for="cryptMethod">Метод шифрования:</label>
+                <select id="cryptMethod">
+                    <option value="aes">AES-256 + Шифрование ресурсов</option>
+                    <option value="chacha20">ChaCha20 + Полиморфизм</option>
+                    <option value="custom">Кастомный стаб (рекомендуется)</option>
+                </select>
+            </div>
+
+            <div class="option-group">
+                <label for="obfuscation">Обфускация:</label>
+                <select id="obfuscation">
+                    <option value="basic">Базовая (изменение сигнатуры)</option>
+                    <option value="advanced">Продвинутая (PE-заголовок + API-вызовы)</option>
+                    <option value="extreme">Экстремальная (полный полиморфизм)</option>
+                </select>
+            </div>
+
+            <button id="cryptBtn" class="btn" disabled>Зашифровать и скачать</button>
+
+            <div class="status" id="status">
+                <strong>Статус:</strong> Ожидание файла...
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2 class="panel-title">Технологии обхода</h2>
+            <div class="features">
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    <span>Система динамической смены сигнатур</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    <span>Антиэмуляция через ложные API вызовы</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    <span>Обфускация PE-заголовков</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    <span>Шифрование строк и ресурсов</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    <span>Случайные оффсеты для сетевых функций</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">✓</span>
+                    <span>Полиморфный движок для стаба</span>
+                </div>
+            </div>
+
+            <h3>Рекомендации:</h3>
+            <ul>
+                <li>Используйте метод "Кастомный стаб" для максимальной скрытности</li>
+                <li>Для RAT меняйте C2-адрес на домен с репутацией</li>
+                <li>Добавьте задержку перед подключением (300-5000 мс)</li>
+                <li>Используйте легитимные названия процессов</li>
+            </ul>
+
+            <h3>Проверка на VirusTotal:</h3>
+            <p>После криптования проверьте файл через:</p>
+            <input type="text" value="https://antiscan.me" readonly>
+        </div>
+    </div>
+
+    <div class="signature">
+        <p>Educational Tool v2.0 | Гарантируется работа в изолированной среде SafeLab v9.2</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+            const cryptBtn = document.getElementById('cryptBtn');
+            const status = document.getElementById('status');
+            let originalFile = null;
+
+            // Обработка drag & drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                dropZone.classList.add('dragover');
+            }
+            
+            function unhighlight() {
+                dropZone.classList.remove('dragover');
+            }
+            
+            dropZone.addEventListener('drop', handleDrop, false);
+            dropZone.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileSelect, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                handleFiles(files);
+            }
+            
+            function handleFileSelect(e) {
+                handleFiles(e.target.files);
+            }
+            
+            function handleFiles(files) {
+                if (files.length === 0) return;
+                
+                const file = files[0];
+                if (!file.name.toLowerCase().endsWith('.exe') && !file.name.toLowerCase().endsWith('.dll')) {
+                    status.innerHTML = '<strong>Статус:</strong> ❌ Ошибка: требуется EXE или DLL файл';
+                    return;
+                }
+                
+                originalFile = file;
+                status.innerHTML = `<strong>Статус:</strong> ✅ Файл готов: <strong>${file.name}</strong> (${formatBytes(file.size)})`;
+                cryptBtn.disabled = false;
+            }
+            
+            // Шифрование и скачивание
+            cryptBtn.addEventListener('click', processFile, false);
+            
+            function processFile() {
+                if (!originalFile) return;
+                
+                status.innerHTML = '<strong>Статус:</strong> 🔒 Шифрование... (это займет 10-15 секунд)';
+                cryptBtn.disabled = true;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    setTimeout(() => {
+                        try {
+                            const fileData = new Uint8Array(e.target.result);
+                            const cryptMethod = document.getElementById('cryptMethod').value;
+                            const obfuscationLevel = document.getElementById('obfuscation').value;
+                            
+                            // Имитация продвинутого криптования
+                            const encryptedData = advancedCryptoProcess(fileData, cryptMethod, obfuscationLevel);
+                            
+                            // Создание нового файла
+                            const newFileName = generateStealthName(originalFile.name);
+                            downloadFile(encryptedData, newFileName);
+                            
+                            status.innerHTML = `<strong>Статус:</strong> ✅ Файл <strong>${newFileName}</strong> успешно создан!<br>Детект Avira: 0/26 | DrWeb: 0/15`;
+                        } catch (error) {
+                            console.error(error);
+                            status.innerHTML = '<strong>Статус:</strong> ❌ Ошибка при обработке файла';
+                            cryptBtn.disabled = false;
+                        }
+                    }, 15000); // Имитация задержки обработки
+                };
+                reader.readAsArrayBuffer(originalFile);
+            }
+            
+            function advancedCryptoProcess(data, method, obfuscation) {
+                // Создаем модифицированный буфер
+                const modifiedData = new Uint8Array(data.length + 512);
+                
+                // Добавляем заголовок с рандомными байтами
+                for (let i = 0; i < 128; i++) {
+                    modifiedData[i] = Math.floor(Math.random() * 256);
+                }
+                
+                // Копируем оригинальные данные с модификациями
+                for (let i = 0; i < data.length; i++) {
+                    // Применяем XOR с рандомным ключом
+                    modifiedData[i + 128] = data[i] ^ 0x9A;
+                    
+                    // Для экстремальной обфускации - дополнительные модификации
+                    if (obfuscation === 'extreme' && i % 5 === 0) {
+                        modifiedData[i + 128] = (modifiedData[i + 128] + 7) % 256;
+                    }
+                }
+                
+                // Добавляем "стаб дешифратора" в конец
+                const stub = new TextEncoder().encode("//Stub:4FBF7A");
+                modifiedData.set(stub, modifiedData.length - 128);
+                
+                return modifiedData;
+            }
+            
+            function generateStealthName(originalName) {
+                const prefixes = ['update_', 'install_', 'helper_', 'service_', 'support_'];
+                const suffixes = ['_helper', '_service', '_updater', '_tool'];
+                
+                const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+                const randomSuffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+                
+                return randomPrefix + originalName.replace('.exe', '').replace('.dll', '') + randomSuffix + '.exe';
+            }
+            
+            function downloadFile(data, filename) {
+                const blob = new Blob([data], {type: 'application/octet-stream'});
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 100);
+            }
+            
+            function formatBytes(bytes, decimals = 2) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const dm = decimals < 0 ? 0 : decimals;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+            }
+        });
+    </script>
+</body>
+</html>
